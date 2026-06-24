@@ -1,78 +1,79 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback } from "react"
-import { RotateCcw, Shuffle, PartyPopper, Eye, EyeOff } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useState, useEffect, useCallback } from "react";
+import { RotateCcw, Shuffle, PartyPopper, Eye, EyeOff } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const SIZE = 3
-const TILE_COUNT = SIZE * SIZE
-const FLAG_SRC = "/images/games/flag.png"
+const SIZE = 3;
+const TILE_COUNT = SIZE * SIZE;
+const FLAG_SRC = "/images/games/flag.png";
 
 // solved state: [0,1,2,3,4,5,6,7,8] where 8 is the empty slot
-const SOLVED = Array.from({ length: TILE_COUNT }, (_, i) => i)
-const EMPTY = TILE_COUNT - 1
+const SOLVED = Array.from({ length: TILE_COUNT }, (_, i) => i);
+const EMPTY = TILE_COUNT - 1;
 
 function isSolved(tiles: number[]) {
-  return tiles.every((t, i) => t === SOLVED[i])
+  return tiles.every((t, i) => t === SOLVED[i]);
 }
 
 function shuffle(): number[] {
-  const tiles = [...SOLVED]
+  const tiles = [...SOLVED];
   // perform many random valid moves from the solved state to guarantee solvability
-  let empty = EMPTY
+  let empty = EMPTY;
   for (let i = 0; i < 200; i++) {
-    const neighbors = neighborsOf(empty)
-    const pick = neighbors[Math.floor(Math.random() * neighbors.length)]
-    ;[tiles[empty], tiles[pick]] = [tiles[pick], tiles[empty]]
-    empty = pick
+    const neighbors = neighborsOf(empty);
+    const pick = neighbors[Math.floor(Math.random() * neighbors.length)];
+    [tiles[empty], tiles[pick]] = [tiles[pick], tiles[empty]];
+    empty = pick;
   }
-  return tiles
+  return tiles;
 }
 
 function neighborsOf(index: number): number[] {
-  const row = Math.floor(index / SIZE)
-  const col = index % SIZE
-  const result: number[] = []
-  if (row > 0) result.push(index - SIZE)
-  if (row < SIZE - 1) result.push(index + SIZE)
-  if (col > 0) result.push(index - 1)
-  if (col < SIZE - 1) result.push(index + 1)
-  return result
+  const row = Math.floor(index / SIZE);
+  const col = index % SIZE;
+  const result: number[] = [];
+  if (row > 0) result.push(index - SIZE);
+  if (row < SIZE - 1) result.push(index + SIZE);
+  if (col > 0) result.push(index - 1);
+  if (col < SIZE - 1) result.push(index + 1);
+  return result;
 }
 
 export function FlagPuzzle() {
-  const [tiles, setTiles] = useState<number[]>(SOLVED)
-  const [moves, setMoves] = useState(0)
-  const [started, setStarted] = useState(false)
-  const [showGuide, setShowGuide] = useState(true)
+  const [tiles, setTiles] = useState<number[]>(SOLVED);
+  const [moves, setMoves] = useState(0);
+  const [started, setStarted] = useState(false);
+  const [showGuide, setShowGuide] = useState(true);
 
-  const solved = started && isSolved(tiles)
+  const solved = started && isSolved(tiles);
 
   const newGame = useCallback(() => {
-    setTiles(shuffle())
-    setMoves(0)
-    setStarted(true)
-  }, [])
+    setTiles(shuffle());
+    setMoves(0);
+    setStarted(true);
+  }, []);
 
   useEffect(() => {
-    newGame()
-  }, [newGame])
+    newGame();
+  }, [newGame]);
 
   const moveTile = (index: number) => {
-    if (solved) return
-    const emptyIndex = tiles.indexOf(EMPTY)
+    if (solved) return;
+    const emptyIndex = tiles.indexOf(EMPTY);
     if (neighborsOf(emptyIndex).includes(index)) {
-      const next = [...tiles]
-      ;[next[emptyIndex], next[index]] = [next[index], next[emptyIndex]]
-      setTiles(next)
-      setMoves((m) => m + 1)
+      const next = [...tiles];
+      [next[emptyIndex], next[index]] = [next[index], next[emptyIndex]];
+      setTiles(next);
+      setMoves((m) => m + 1);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
       <p className="rounded-2xl border border-border bg-card p-4 text-center text-muted-foreground">
-        انقر على قطعة مجاورة للفراغ لتحريكها، وأعد ترتيب القطع لتكوين العلم التونسي كاملًا.
+        انقر على قطعة مجاورة للفراغ لتحريكها، وأعد ترتيب القطع لتكوين العلم
+        التونسي كاملًا.
       </p>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
@@ -86,9 +87,9 @@ export function FlagPuzzle() {
             }}
           >
             {tiles.map((tile, index) => {
-              const isEmpty = tile === EMPTY
-              const tileRow = Math.floor(tile / SIZE)
-              const tileCol = tile % SIZE
+              const isEmpty = tile === EMPTY;
+              const tileRow = Math.floor(tile / SIZE);
+              const tileCol = tile % SIZE;
               return (
                 <button
                   key={index}
@@ -98,7 +99,9 @@ export function FlagPuzzle() {
                   className={cn(
                     "relative transition-opacity",
                     isEmpty && !solved && "opacity-0",
-                    !isEmpty && !solved && "cursor-pointer ring-1 ring-background/40 hover:brightness-110",
+                    !isEmpty &&
+                      !solved &&
+                      "cursor-pointer ring-1 ring-background/40 hover:brightness-110",
                   )}
                   style={
                     isEmpty && !solved
@@ -110,7 +113,7 @@ export function FlagPuzzle() {
                         }
                   }
                 />
-              )
+              );
             })}
           </div>
         </div>
@@ -118,15 +121,25 @@ export function FlagPuzzle() {
         {/* Sidebar */}
         <div className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-5 text-center">
-            <span className="text-xs font-bold uppercase tracking-widest text-terracotta">عدد الحركات</span>
-            <p className="mt-1 font-[family-name:var(--font-heading)] text-4xl font-bold text-foreground">{moves}</p>
+            <span className="text-xs font-bold uppercase tracking-widest text-terracotta">
+              عدد الحركات
+            </span>
+            <p className="mt-1 font-[family-name:var(--font-heading)] text-4xl font-bold text-foreground">
+              {moves}
+            </p>
           </div>
 
           {showGuide && (
             <div className="overflow-hidden rounded-2xl border border-border bg-card p-3">
-              <span className="text-xs font-bold text-muted-foreground">الصورة الكاملة</span>
+              <span className="text-xs font-bold text-muted-foreground">
+                الصورة الكاملة
+              </span>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={FLAG_SRC} alt="العلم التونسي كاملًا كمرجع" className="mt-2 w-full rounded-xl" />
+              <img
+                src={FLAG_SRC}
+                alt="العلم التونسي كاملًا كمرجع"
+                className="mt-2 w-full rounded-xl"
+              />
             </div>
           )}
 
@@ -135,7 +148,11 @@ export function FlagPuzzle() {
               onClick={() => setShowGuide((s) => !s)}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-bold text-foreground transition hover:bg-muted"
             >
-              {showGuide ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showGuide ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
               {showGuide ? "إخفاء الصورة" : "إظهار الصورة"}
             </button>
             <button
@@ -155,7 +172,9 @@ export function FlagPuzzle() {
           <h3 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-foreground">
             مبروك! أكملتَ العلم التونسي
           </h3>
-          <p className="text-muted-foreground">أنجزتَ الأحجية في {moves} حركة. هل تستطيع أن تفعلها بحركات أقل؟</p>
+          <p className="text-muted-foreground">
+            أنجزتَ الأحجية في {moves} حركة. هل تستطيع أن تفعلها بحركات أقل؟
+          </p>
           <button
             onClick={newGame}
             className="mt-2 inline-flex items-center gap-2 rounded-full bg-terracotta px-5 py-2.5 text-sm font-bold text-terracotta-foreground transition hover:opacity-90"
@@ -166,5 +185,5 @@ export function FlagPuzzle() {
         </div>
       )}
     </div>
-  )
+  );
 }

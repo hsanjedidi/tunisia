@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { RotateCcw, Check } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useState } from "react";
+import Image from "next/image";
+import { RotateCcw, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type Item = {
-  id: string
-  name: string
-  desc: string
-  image: string
-}
+  id: string;
+  name: string;
+  desc: string;
+  image: string;
+};
 
 const ITEMS: Item[] = [
   {
@@ -37,14 +37,14 @@ const ITEMS: Item[] = [
     desc: "حذاء جلدي تقليدي مريح بلون ذهبي.",
     image: "/images/games/item-balgha.png",
   },
-]
+];
 
 export function DressUp() {
-  const [worn, setWorn] = useState<Record<string, boolean>>({})
+  const [worn, setWorn] = useState<Record<string, boolean>>({});
 
-  const toggle = (id: string) => setWorn((w) => ({ ...w, [id]: !w[id] }))
-  const reset = () => setWorn({})
-  const wornCount = Object.values(worn).filter(Boolean).length
+  const toggle = (id: string) => setWorn((w) => ({ ...w, [id]: !w[id] }));
+  const reset = () => setWorn({});
+  const wornCount = Object.values(worn).filter(Boolean).length;
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
@@ -69,7 +69,8 @@ export function DressUp() {
                   "object-contain transition-opacity duration-300",
                   item.id === "chechia" && "scale-[0.4] -translate-y-[28%]",
                   item.id === "jebba" && "scale-[0.7] translate-y-[8%]",
-                  item.id === "sefsari" && "scale-[0.85] translate-y-[2%] opacity-90",
+                  item.id === "sefsari" &&
+                    "scale-[0.85] translate-y-[2%] opacity-90",
                   item.id === "balgha" && "scale-[0.35] translate-y-[42%]",
                 )}
               />
@@ -77,14 +78,18 @@ export function DressUp() {
           )}
         </div>
         <p className="rounded-full bg-secondary/15 px-4 py-1.5 text-sm font-semibold text-secondary-foreground">
-          {wornCount > 0 ? `ارتديتَ ${wornCount} من القطع` : "اختر قطعة لتبدأ التلبيس"}
+          {wornCount > 0
+            ? `ارتديتَ ${wornCount} من القطع`
+            : "اختر قطعة لتبدأ التلبيس"}
         </p>
       </div>
 
       {/* Wardrobe */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-serif text-2xl font-bold text-foreground">خزانة الملابس التقليدية</h2>
+          <h2 className="font-serif text-2xl font-bold text-foreground">
+            خزانة الملابس التقليدية
+          </h2>
           <button
             onClick={reset}
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-semibold text-foreground transition hover:bg-muted"
@@ -96,7 +101,7 @@ export function DressUp() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           {ITEMS.map((item) => {
-            const active = !!worn[item.id]
+            const active = !!worn[item.id];
             return (
               <button
                 key={item.id}
@@ -115,17 +120,26 @@ export function DressUp() {
                   </span>
                 )}
                 <div className="relative size-24">
-                  <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-contain" />
+                  <Image
+                    src={item.image || "/placeholder.svg"}
+                    alt={item.name}
+                    fill
+                    className="object-contain"
+                  />
                 </div>
                 <div>
-                  <h3 className="font-serif text-lg font-bold text-foreground">{item.name}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
+                  <h3 className="font-serif text-lg font-bold text-foreground">
+                    {item.name}
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    {item.desc}
+                  </p>
                 </div>
               </button>
-            )
+            );
           })}
         </div>
       </div>
     </div>
-  )
+  );
 }
