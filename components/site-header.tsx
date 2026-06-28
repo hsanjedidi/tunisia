@@ -28,11 +28,11 @@ export function SiteHeader() {
           onClick={() => setOpen(false)}
         >
           <Image
-            src="/ChatGPT Image 24 juin 2026, 16_33_13-Photoroom.png"
+            src="/ner.png"
             alt="إفريقية Logo"
-            width={40}
-            height={40}
-            className="h-35 w-35 rounded-full object-cover"
+            width={120} /* Ajustez la largeur selon vos besoins */
+            height={50} /* Ajustez la hauteur selon vos besoins */
+            className="h-30 max-h-30 w-auto object-contain"
           />
         </Link>
 
